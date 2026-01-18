@@ -1,2 +1,1 @@
-# securevault-api
-SecureVault CCTV Cloud Storage API
+# SecureVault CCTV API
