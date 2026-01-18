@@ -1,29 +1,30 @@
 export default async function handler(req: any, res: any) {
-  // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  try {
+    // Set CORS headers
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // Handle OPTIONS for CORS
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
+    // Handle OPTIONS
+    if (req.method === 'OPTIONS') {
+      return res.status(200).end();
+    }
 
-  // Get the path
-  const path = req.url || '/';
+    // Get path
+    const url = req.url || '/';
+    
+    console.log('Incoming request:', { method: req.method, url });
 
-  // Health check route
-  if (path === '/health' || path === '/api/health') {
-    return res.status(200).json({
-      status: 'ok',
-      timestamp: new Date().toISOString(),
-      service: 'SecureVault API',
-      environment: process.env.NODE_ENV || 'production'
-    });
-  }
+    // Health check
+    if (url.includes('health')) {
+      return res.status(200).json({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        service: 'SecureVault API',
+      });
+    }
 
-  // Root route - API info
-  if (path === '/' || path === '/api' || path === '/api/') {
+    // Default - API info (for all other paths)
     return res.status(200).json({
       message: 'SecureVault CCTV API',
       version: '1.0.0',
@@ -31,17 +32,16 @@ export default async function handler(req: any, res: any) {
       endpoints: {
         health: '/health',
         api: '/api',
-        cameras: '/api/cameras (coming soon)',
-        recordings: '/api/recordings (coming soon)',
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+    });
+
+  } catch (error: any) {
+    console.error('Handler error:', error);
+    return res.status(500).json({
+      error: 'Internal Server Error',
+      message: error.message,
+      timestamp: new Date().toISOString(),
     });
   }
-
-  // 404 for other routes
-  return res.status(404).json({
-    error: 'Not Found',
-    message: `Route ${req.method} ${path} not found`,
-    timestamp: new Date().toISOString()
-  });
 }
