@@ -29,3 +29,7 @@ Thumbs.db
 # NPM
 .npmrc
 package-lock.json
+
+# NPM
+.npmrc
+package-lock.json
