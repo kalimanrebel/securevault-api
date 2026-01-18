@@ -1,39 +1,38 @@
-import Fastify from 'fastify';
-import cors from '@fastify/cors';
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-const fastify = Fastify({
-  logger: false,
-  trustProxy: true,
-});
+export default async function handler(
+  req: VercelRequest,
+  res: VercelResponse,
+) {
+  // CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-await fastify.register(cors, {
-  origin: true,
-  credentials: true,
-});
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
 
-// Root route
-fastify.get('/', async () => {
-  return { 
+  const path = req.url || '/';
+
+  // Health check
+  if (path.includes('/health')) {
+    return res.status(200).json({
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      service: 'SecureVault API',
+    });
+  }
+
+  // Root - API info
+  return res.status(200).json({
     message: 'SecureVault CCTV API',
     version: '1.0.0',
     status: 'running',
     endpoints: {
       health: '/health',
       api: '/api',
-    }
-  };
-});
-
-// Health check
-fastify.get('/health', async () => {
-  return { 
-    status: 'ok', 
+    },
     timestamp: new Date().toISOString(),
-    service: 'SecureVault API'
-  };
-});
-
-export default async function handler(req: any, res: any) {
-  await fastify.ready();
-  fastify.server.emit('request', req, res);
+  });
 }

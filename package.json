@@ -2,28 +2,14 @@
   "name": "securevault-api",
   "version": "1.0.0",
   "type": "module",
-  "description": "SecureVault CCTV Cloud Storage API",
-  "main": "dist/server.js",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js"
+    "dev": "vercel dev"
   },
-  "keywords": ["cctv", "surveillance", "cloud-storage"],
-  "author": "SecureVault",
-  "license": "MIT",
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.489.0",
-    "@aws-sdk/s3-request-presigner": "^3.489.0",
-    "@fastify/cors": "^8.4.2",
-    "@fastify/jwt": "^7.2.3",
-    "@supabase/supabase-js": "^2.39.0",
-    "dotenv": "^16.3.1",
-    "fastify": "^4.25.1"
+    "@vercel/node": "^3.2.29"
   },
   "devDependencies": {
     "@types/node": "^20.10.6",
-    "tsx": "^4.7.0",
     "typescript": "^5.3.3"
   }
 }
